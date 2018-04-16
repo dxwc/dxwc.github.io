@@ -1,0 +1,235 @@
+<!doctype html>
+<head>
+    <meta charset='UTF-8'>
+    <title>generate youtube video link with start and end time</title>
+    <style>input{margin-left:1%}.link{width:60%}.time{width:20%}</style>
+</head>
+<body>
+    <h3>Youtube video link with start and/or end time -generator</h3>
+    <b>Link:</b> <input
+        class='link'
+        id='url'
+        type='text'>
+    <br>
+    <b>Start at:</b> <input
+        class='time'
+        title='optional'
+        id='start_minute'
+        min='0'
+        max='59'
+        step='1'
+        type='number'> minute and
+    <input
+        class='time'
+        title='optional'
+        id='start_second'
+        min='0'
+        max='59'
+        step='1'
+        type='number'> second
+    <br>
+    <b>End at:</b> <input
+        class='time'
+        title='optional'
+        id='end_minute'
+        min='0'
+        max='59'
+        step='1'
+        type='number'> minute and
+    <input
+        class='time'
+        title='optional'
+        id='end_second'
+        min='0'
+        max='59'
+        step='1'
+        type='number'> second
+    <br>
+    <br>
+    <button id='btn'>Generate</button>
+    <br>
+
+    <p id='output'></p>
+
+    <script>
+        "use strict";
+        var url = document.getElementById("url"),
+        start_minute = document.getElementById("start_minute"),
+        start_second = document.getElementById("start_second"),
+        end_minute = document.getElementById("end_minute"),
+        end_second = document.getElementById("end_second"),
+        btn = document.getElementById("btn"),
+        output = document.getElementById("output");
+        function generate(a) {
+        if (
+            "" === start_minute.value &&
+            "" === start_second.value &&
+            (end_minute.value.length || end_second.value.length)
+        ) {
+            var b = 0;
+            return (
+            end_minute.value && (b = 60 * +end_minute.value),
+            end_second.value && (b += +end_second.value),
+            "https://www.youtube.com/embed/" + a + "?rel=0&autoplay=1&end=" + b
+            );
+        }
+        if (
+            (start_minute.value.length || start_second.value.length) &&
+            "" === end_minute.value &&
+            "" === end_second.value
+        )
+            return (
+            "https://www.youtube.com/watch?v=" +
+            a +
+            "&t=" +
+            (start_minute.value ? start_minute.value + "m" : "") +
+            (start_second.value ? start_second.value + "s" : "")
+            );
+        if (
+            (start_minute.value.length || start_second.value.length) &&
+            (end_minute.value.length || end_second.value.length)
+        ) {
+            var c = 0,
+            d = 0;
+            return (
+            start_minute.value && (c = 60 * +start_minute.value),
+            start_second.value && (c += +start_second.value),
+            end_minute.value && (d = 60 * +end_minute.value),
+            end_second.value && (d += +end_second.value),
+            "https://www.youtube.com/embed/" +
+                a +
+                "?rel=0&autoplay=1&start=" +
+                c +
+                "&end=" +
+                d
+            );
+        }
+        return "https://www.youtube.com/watch?v=" + a;
+        }
+        btn.addEventListener("click", function() {
+        output.innerHTML = "processing";
+        try {
+            var _iteratorNormalCompletion = !0,
+            _didIteratorError = !1,
+            _iteratorError = void 0;
+            try {
+            for (
+                var b,
+                c,
+                a = url.value
+                    .split("?")[1]
+                    .split("&")
+                    [Symbol.iterator]();
+                !(_iteratorNormalCompletion = (b = a.next()).done);
+                _iteratorNormalCompletion = !0
+            )
+                if (((c = b.value), "v=" === c.substring(0, 2))) {
+                var d = generate(c.substring(2));
+                output.innerHTML = "<a href='" + d + "'>" + d + "</a>";
+                break;
+                }
+            } catch (e) {
+            (_didIteratorError = !0), (_iteratorError = e);
+            } finally {
+            try {
+                !_iteratorNormalCompletion && a.return && a.return();
+            } finally {
+                if (_didIteratorError) throw _iteratorError;
+            }
+            }
+        } catch (e) {}
+        "processing" === output.innerHTML && (output.innerHTML = "Couldn't do it :(");
+        });
+    </script>
+
+<!-- un-babled-version
+    <script>
+        let url = document.getElementById('url');
+        let start_minute = document.getElementById('start_minute');
+        let start_second = document.getElementById('start_second');
+        let end_minute = document.getElementById('end_minute');
+        let end_second = document.getElementById('end_second');
+
+        let btn = document.getElementById('btn');
+
+        let output = document.getElementById('output');
+
+        function generate(id)
+        {
+            if
+            (
+                start_minute.value === '' && start_second.value === '' &&
+                (end_minute.value.length || end_second.value.length)
+            )
+            {
+                // console.log('end but no start');
+                let end = 0;
+
+                if(end_minute.value) end = Number(end_minute.value)*60;
+                if(end_second.value) end += Number(end_second.value);
+
+                return `https://www.youtube.com/embed/${id}?rel=0&autoplay=1&end=${
+                    end}`;
+            }
+            else if
+            (
+                (start_minute.value.length || start_second.value.length) &&
+                end_minute.value === '' && end_second.value === ''
+            )
+            {
+                // console.log('start but no end');
+                return `https://www.youtube.com/watch?v=${id}&t=${
+                    start_minute.value ? start_minute.value + 'm' : ''}${
+                    start_second.value ? start_second.value + 's' : ''}`;
+            }
+            else if
+            (
+                (start_minute.value.length || start_second.value.length) &&
+                (end_minute.value.length || end_second.value.length)
+            )
+            {
+                // console.log('both');
+                let start = 0;
+                let end = 0;
+
+                if(start_minute.value) start = Number(start_minute.value)*60;
+                if(start_second.value) start += Number(start_second.value);
+
+                if(end_minute.value) end = Number(end_minute.value)*60;
+                if(end_second.value) end += Number(end_second.value);
+
+                return `https://www.youtube.com/embed/${id}?rel=0&autoplay=1&start=${
+                    start}&end=${end}`;
+            }
+            else
+            {
+                // console.log('neither');
+                return `https://www.youtube.com/watch?v=${id}`;
+            }
+
+        }
+
+        btn.addEventListener('click', () =>
+        {
+            output.innerHTML = 'processing';
+
+            try
+            {
+                for(let val of url.value.split('?')[1].split('&'))
+                {
+                    if(val.substring(0, 2) === 'v=')
+                    {
+                        let generated = generate(val.substring(2));
+                        output.innerHTML = `<a href='${generated}'>${generated}</a>`;
+                        break;
+                    }
+                }
+            }
+            catch(err){ }
+
+            if(output.innerHTML === 'processing')
+                output.innerHTML = 'Couldn\'t do it :(';
+        });
+    </script>
+-->
+</body>

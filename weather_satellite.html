@@ -40,6 +40,7 @@
         margin-right: auto;
     }
 </style>
+<div id='time'></div>
 <div id='grid'>
 <img src='https://cdn.star.nesdis.noaa.gov/GOES16/ABI/GIFS/GOES16-CONUS-GEOCOLOR-625x375.gif'>
 <div id='grid1'>
@@ -47,3 +48,11 @@
     <img src='https://cdn.star.nesdis.noaa.gov/GOES16/ABI/GIFS/GOES16-NE-13-600x600.gif'>
 </div>
 </div>
+<script>
+    var time = document.getElementById('time');
+    time.innerHTML = 'UTC time now: ' + new Date().toUTCString()
+    setInterval(function()
+    {
+        time.innerHTML = 'UTC time now: ' + new Date().toUTCString();
+    }, 1000);
+</script>

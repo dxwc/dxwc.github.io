@@ -1,0 +1,131 @@
+<!doctype html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Playlist creator for youtube videos</title>
+    <style>
+        input[type='text']{width: 97%;}
+        ul{ list-style: none; }
+        li a
+        {
+            color: #000;
+            text-decoration: none;
+            border-bottom: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <h3>Playlist generator for youtube videos</h3>
+    <ul>
+        <li title='NOTE: only works when more than one video in the playlist'>
+            Check to loop playlist: &nbsp;<input id='checkbox' type='checkbox'>
+        </li>
+        <li><button id='add_link'>Add video link</button></li>
+    </ul>
+    <div id='container'></div>
+    <br>
+    <button id='generate'>Generate</button>
+
+    <p id='output'></p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <hr>
+    <ul style='margin: 0%; padding: 0%;'>
+        <li>
+        <ul style='float: left; margin: 1%;'>
+            <b>Similar tools:</b>
+            <li>
+                <a
+                href='https://dxwc.github.io/youtube-video-link-set-start-end-time.html'
+                >video start and/or end time setter</a>
+            </li>
+            <li>
+                <a href='https://github.com/dxwc/vidlist'>
+                    command line youtube channel subscriber
+                </a>
+            </li>
+            <li>
+                <a href='https://github.com/dxwc/plcr'>
+                    command line version of this
+                </a>
+            </li>
+        </ul>
+        </li>
+        <li>
+        <ul style='float:right; margin: 1%;'>
+            <li>version: 1.0</li>
+            <li>
+                <a href='https://github.com/dxwc/plcr-web/issues'>report issues</a>
+            </li>
+        </ul>
+        </li>
+    </ul>
+        <br>
+
+    <script>
+        let add_link = document.getElementById('add_link');
+        let container = document.getElementById('container');
+        let is_loop = document.getElementById('checkbox');
+        let generate = document.getElementById('generate');
+        let output = document.getElementById('output');
+
+        add_link.addEventListener('click', () =>
+        {
+            let input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('title', 'a valid youtube /watch link');
+            input.setAttribute('placeholder', 'Enter a youtube video link');
+            container.appendChild(input);
+            container.appendChild(document.createElement('br'));
+        });
+
+        generate.addEventListener('click', () =>
+        {
+            let inputs = document.getElementsByTagName('input');
+
+            let videos = [];
+
+            let input;
+            for(let i = 0; i < inputs.length; ++i)
+            {
+                input = inputs[i].value.trim();
+                if
+                (
+                    input.length &&
+                    input.match(/https:\/\/www.youtube.com\/watch\?.+/) !== null
+                )
+                {
+                    try
+                    {
+                        for(let val of input.split('?')[1].split('&'))
+                        {
+                            if(val.substring(0, 2) === 'v=')
+                            {
+                                if(val.substring(2).trim().length)
+                                    videos.push(val.substring(2).trim());
+                                break;
+                            }
+                        }
+                    }
+                    catch(err){ }
+                }
+            }
+
+            let url;
+            if(videos.length)     url = 'https://www.youtube.com/embed/' + videos[0];
+            if(videos.length > 1) url += '?playlist=' + videos[1];
+            for(let i = 2; i < videos.length; ++i) url += ',' + videos[i];
+            if(videos.length)
+            {
+                url += (videos.length === 1 ? '?' : '&') + 'rel=0';
+                if(is_loop.checked === true) url += '&loop=1';
+            }
+            if(typeof url === 'undefined') output.innerHTML = `Couldn't do it :(`;
+            else output.innerHTML = `<a href='${url}' target='_blank'>${url}</a>`;
+        });
+    </script>
+</body>

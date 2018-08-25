@@ -1,0 +1,4 @@
+<sha256sum>	<filename>:
+
+89b8d4ca05c1c980c7d12ef248f857ad8ac9a0b3f0ef9c3d8cb50ee804795ebe  resume_0.0.0.pdf
+6367a53233865eeb9093b9b853b5f2fd8738f666cb11c71076dc68a7307fb60f  resume_0.0.1.pdf

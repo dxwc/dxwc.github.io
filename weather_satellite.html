@@ -18,9 +18,15 @@
     <li><a href='https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/'>North and South America full disk image every mintute or so (resolution upto 10848x10848 jpg !)</a></li>
 </ul>
 <style>
+    html, body
+    {
+        padding: 0;
+        margin: 0;
+    }
     #grid
     {
         display: grid;
+        grid-template-columns: 1fr;
         grid-template-rows: 1fr 1.6fr;
         background-color: #000;
         margin: 0;
@@ -31,6 +37,7 @@
     {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
     }
     img
     {
@@ -50,9 +57,26 @@
 </div>
 <script>
     var time = document.getElementById('time');
-    time.innerHTML = 'UTC time now: ' + new Date().toUTCString()
-    setInterval(function()
+    let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function pad(inp)
     {
-        time.innerHTML = 'UTC time now: ' + new Date().toUTCString();
-    }, 1000);
+        if(String(inp).length === 1) return '0' + inp;
+        else return inp;
+    }
+
+
+    function get_time_str()
+    {
+        var now = new Date();
+        return 'Current Time: '
+            + pad(now.getUTCDate()) + ' '
+            + month[now.getUTCMonth()] + ' '
+            + now.getUTCFullYear() + ' '
+            + pad(now.getUTCHours()) + ':'
+            + pad(now.getUTCMinutes()) + ' UTC';
+
+    }
+
+    time.innerHTML = get_time_str();
+    setInterval(function() { time.innerHTML = get_time_str(); }, 60000);
 </script>

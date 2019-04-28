@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +24,7 @@
     <div
         id='image'
         style='
-        background: url(https://source.unsplash.com/1600x900/?nature,water) no-repeat center center fixed;
+        background: url(https://source.unsplash.com/1920x1080/?nature,water) no-repeat center center fixed;
         background-size: cover;
         height: 100%;
         overflow: hidden;'>
@@ -31,65 +32,59 @@
     </div>
     <br>
     <script>
-        "use strict";
+        document.addEventListener('click', fullscreen);
+        let image = document.getElementById('image');
+        let height = screen.height, width = screen.width;
+        let EVERY_WHAT_SECOND = 10;
 
-        document.addEventListener("click", fullscreen);
-        var image = document.getElementById("image");
-        var height = screen.height,
-        width = screen.width;
-        var EVERY_WHAT_SECOND = 10;
-        window.setInterval(function() {
-        fetch(
-            "https://source.unsplash.com/"
-            .concat(window.innerWidth, "x")
-            .concat(window.innerHeight, "/?nature,water")
-        )
-            .then(function(res) {
-            image.style = "background: url(".concat(
-                res.url,
-                ") no-repeat center center fixed;\n                background-size: cover;\n                height: 100%;\n                overflow: hidden;"
-            );
+        window.setInterval(() =>
+        {
+            fetch(`https://source.unsplash.com/${width}x${height}/?nature,water`)
+            .then((res) =>
+            {
+                image.style =
+                `background: url(${res.url}) no-repeat center center fixed;
+                background-size: cover;
+                height: 100%;
+                overflow: hidden;`
             })
-            .catch(function(err) {
-            image.src = "https://source.unsplash.com/"
-                .concat(window.innerWidth, "x")
-                .concat(window.innerHeight, "/?nature,water");
-            console.error("broke", err);
+            .catch((err) =>
+            {
+                image.src = `https://source.unsplash.com/${width}x${height}/?nature,water`;
+                console.error('broke', err);
             });
-        }, EVERY_WHAT_SECOND * 1000); // https://stackoverflow.com/a/36672683
+        }, EVERY_WHAT_SECOND * 1000);
 
+        // https://stackoverflow.com/a/36672683
         function fullscreen() {
-        var isInFullScreen =
-            (document.fullscreenElement && document.fullscreenElement !== null) ||
-            (document.webkitFullscreenElement &&
-            document.webkitFullscreenElement !== null) ||
-            (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-            (document.msFullscreenElement && document.msFullscreenElement !== null);
-        var docElm = document.documentElement;
+            var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+                (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+                (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+                (document.msFullscreenElement && document.msFullscreenElement !== null);
 
-        if (!isInFullScreen) {
-            if (docElm.requestFullscreen) {
-            docElm.requestFullscreen();
-            } else if (docElm.mozRequestFullScreen) {
-            docElm.mozRequestFullScreen();
-            } else if (docElm.webkitRequestFullScreen) {
-            docElm.webkitRequestFullScreen();
-            } else if (docElm.msRequestFullscreen) {
-            docElm.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-            document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
+            var docElm = document.documentElement;
+            if (!isInFullScreen) {
+                if (docElm.requestFullscreen) {
+                    docElm.requestFullscreen();
+                } else if (docElm.mozRequestFullScreen) {
+                    docElm.mozRequestFullScreen();
+                } else if (docElm.webkitRequestFullScreen) {
+                    docElm.webkitRequestFullScreen();
+                } else if (docElm.msRequestFullscreen) {
+                    docElm.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
             }
         }
-        }
-
     </script>
 </body>
 </html>

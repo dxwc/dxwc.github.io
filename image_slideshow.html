@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SlideShow</title>
     <style>
-        html, body, img
+        html, body, #image
         {
             border: 0;
+            position: absolute;
             left: 0;
             right: 0;
             padding: 0;
@@ -17,46 +18,75 @@
             overflow: hidden;
             background-color: black;
             cursor: none;
+            height: 100%;
+            background-size: cover;
+            -webkit-transition: background-image 0.2s ease-in-out;
+            transition: background-image 0.2s ease-in-out;
+        }
+        #loading
+        {
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div
-        id='image'
-        style='
-        background: url(https://source.unsplash.com/1920x1080/?nature,water) no-repeat center center fixed;
-        background-size: cover;
-        height: 100%;
-        overflow: hidden;'>
-
+    <h1 id='loading' style='display: table; margin: 0 auto;'>
+        Loading...
+    </h1>
+    <div id='image'>
     </div>
     <br>
     <script>
-        document.addEventListener('click', fullscreen);
-        let image = document.getElementById('image');
-        let height = screen.height, width = screen.width;
-        let EVERY_WHAT_SECOND = 10;
-
-        window.setInterval(() =>
+        window.addEventListener('DOMContentLoaded', (e) =>
         {
-            fetch(`https://source.unsplash.com/${width}x${height}/?nature,water`)
-            .then((res) =>
+            document.addEventListener('click', toggle_fullscreen);
+            document.addEventListener('keydown', (e) =>
             {
-                image.style =
-                `background: url(${res.url}) no-repeat center center fixed;
-                background-size: cover;
-                height: 100%;
-                overflow: hidden;`
+                if(e.keyCode != 70) return;
+                toggle_fullscreen();
             })
-            .catch((err) =>
+            let image = document.getElementById('image');
+            let height = screen.height, width = screen.width;
+            let EVERY_WHAT_SECOND = 10;
+
+            function load_in_background_then_set(url, is_first)
             {
-                image.src = `https://source.unsplash.com/${width}x${height}/?nature,water`;
-                console.error('broke', err);
-            });
-        }, EVERY_WHAT_SECOND * 1000);
+                let newImg = document.createElement('img');
+                newImg.src = url;
+                newImg.addEventListener('load', (e) =>
+                {
+                    if(is_first)
+                    {
+                        let loading = document.getElementById('loading');
+                        loading.parentNode.removeChild(loading);
+                    }
+                    image.style = `background: url(${url}) no-repeat center center fixed`;
+                    newImg.parentNode.removeChild(newImg);
+                });
+                document.body.appendChild(newImg);
+            }
+
+            function img_setter(is_first)
+            {
+                return fetch(`https://source.unsplash.com/${width}x${height}/?nature,water`)
+                .then((res) => load_in_background_then_set(res.url, is_first))
+                .catch((err) =>
+                {
+                    console.error(err);
+                    if(is_first)
+                    {
+                        document.getElementById('loading').innerHTML = 'Encountered an unexpected error';
+                    }
+                });
+            }
+
+            img_setter(true);
+
+            window.setInterval(img_setter, EVERY_WHAT_SECOND * 1000);
+        });
 
         // https://stackoverflow.com/a/36672683
-        function fullscreen() {
+        function toggle_fullscreen() {
             var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
                 (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
                 (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
